@@ -1,0 +1,26 @@
+Vagrant::Config.run do |config|
+    config.vm.box = "hashicorp/precise64"
+    #nome da vm
+    config.vm.network :hostonly, "192.168.33.13"
+    #ip do vagrant
+    config.vm.forward_port 80, 8080
+    #toda chamada que vier da porta 80 está difecionada para a porta 8080
+
+    config.vm.share_folder("v-root", "/var/www", ".", :nfs => true)
+   
+
+    # Caminho absoluto , caminho onde eu estou mapeando alguma pasta da minha maquina para dentro da VM
+    config.vm.share_folder("v-root", "/var/www", "./files", :nfs => true)
+    # se n colocar nada a pasta vagrant é a pasta compartilhada
+
+    # memoria para a maquina virtual
+    config.vm.customize do |vm|
+        vm.memory_size = 512
+    end
+
+    config.vm.provision :puppet do |puppet|
+        puppet.manifests_path = "manifests"
+        puppet.manifest_file  = "base.pp"
+    end
+end
+
